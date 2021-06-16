@@ -14,7 +14,7 @@ var regexOrigin = new RegExp("^https?://([a-z].*)?koors.io$"); //koors.io
   var serviceAccount ={}
   
   if ( filesystem.existsSync('./creds.json')) {
-    
+
     if (filesystem.readFileSync('./creds.json').length === 0) {
       console.log('exists');
       filesystem.writeFileSync("./creds.json",process.env.CREDS);
@@ -133,14 +133,14 @@ var regexOrigin = new RegExp("^https?://([a-z].*)?koors.io$"); //koors.io
     .collection("products")
     .doc(req.body.Project.Name)
     .get();
-    if (!isNotUnique) {
+    if (!isNotUnique.data()) {
       res.send({
         message: "No Project with such name!"
       })
     } else {
       if (isNotUnique.data().secret==req.body.secret) {
         const project = await
- db.collection('products').doc(req.body.Project.Name).set({Project:req.body.Project})
+ db.collection('products').doc(req.body.Project.Name).set({Project:req.body.Project},{ merge: true })
       res.send(project)
       } else {
         res.send({
